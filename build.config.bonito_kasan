@@ -1,5 +1,5 @@
 DEFCONFIG=bonito_defconfig
-KERNEL_DIR=private/msm-google
+KERNEL_DIR=../bonito-kernel-4.9-android-10/msm
 . ${ROOT_DIR}/${KERNEL_DIR}/build.config.common.clang
 POST_DEFCONFIG_CMDS="check_defconfig && update_kasan_config"
 
@@ -14,13 +14,34 @@ function update_kasan_config() {
          -d CONFIG_KASAN_OUTLINE \
          -d CONFIG_RANDOMIZE_BASE \
          -d CONFIG_CC_WERROR \
-         --set-val CONFIG_FRAME_WARN 0 \
+         -e CONFIG_KCOV_INSTRUMENT_ALL \
+         -e CONFIG_KCOV_ENABLE_COMPARISONS \
+         -e CONFIG_DEBUG_FS \
+         -e CONFIG_DEBUG_INFO \
+         -e CONFIG_KALLSYMS \
+         -e CONFIG_KALLSYMS_ALL \
+         -e CONFIG_NAMESPACES \
+         -e CONFIG_UTS_NS \
+         -e CONFIG_IPC_NS \
+         -e CONFIG_PID_NS \
+         -e CONFIG_NET_NS \
+         -e CONFIG_CGROUP_PIDS \
+         -e CONFIG_MEMCG \
+         -e CONFIG_USER_NS \
+         -e CONFIG_FAULT_INJECTION \
+         -e CONFIG_FAULT_INJECTION_DEBUG_FS \
+         -e CONFIG_FAILSLAB \
+         -e CONFIG_FAIL_PAGE_ALLOC \
+         -e CONFIG_FAIL_MAKE_REQUEST \
+         -e CONFIG_FAIL_IO_TIMEOUT \
+         -e CONFIG_FAIL_FUTEX \
          -d LTO \
          -d LTO_CLANG \
          -d CFI \
          -d CFI_PERMISSIVE \
          -d CFI_CLANG \
-         -d SHADOW_CALL_STACK
+         -d SHADOW_CALL_STACK \
+         -d MODVERSIONS
     (cd ${OUT_DIR} && \
      make O=${OUT_DIR} $archsubarch CROSS_COMPILE=${CROSS_COMPILE} olddefconfig)
 }
